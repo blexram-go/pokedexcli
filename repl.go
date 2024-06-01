@@ -39,6 +39,11 @@ type commandCLI struct {
 
 func getCommands() map[string]commandCLI {
 	return map[string]commandCLI{
+		"map": {
+			name:        "map",
+			description: "Displays 20 locations areas",
+			callback:    commandMap,
+		},
 		"help": {
 			name:        "help",
 			description: "Displays a help menu",

@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+
+	"github.com/gobash-blex/pokedexcli/internal/pokeapi"
 )
 
 func commandHelp() error {
@@ -20,5 +23,19 @@ func commandHelp() error {
 
 func commandExit() error {
 	os.Exit(0)
+	return nil
+}
+
+func commandMap() error {
+	pokeapiClient := pokeapi.NewClient()
+
+	resp, err := pokeapiClient.ListLocationAreas()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Location Areas:")
+	for _, area := range resp.Results {
+		fmt.Printf("-%s\n", area.Name)
+	}
 	return nil
 }
