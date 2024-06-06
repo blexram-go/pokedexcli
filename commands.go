@@ -1,14 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"os"
-
-	"github.com/gobash-blex/pokedexcli/internal/pokeapi"
 )
 
-func commandHelp() error {
+func commandHelp(cfg *config) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedexcli!")
 	fmt.Println("Here are your available commands:")
@@ -21,21 +19,44 @@ func commandHelp() error {
 	return nil
 }
 
-func commandExit() error {
+func commandExit(cfg *config) error {
 	os.Exit(0)
 	return nil
 }
 
-func commandMap() error {
-	pokeapiClient := pokeapi.NewClient()
-
-	resp, err := pokeapiClient.ListLocationAreas()
+func commandMapF(cfg *config) error {
+	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.nextLocationAreasURL)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	fmt.Println("Location Areas:")
 	for _, area := range resp.Results {
 		fmt.Printf("-%s\n", area.Name)
 	}
+
+	cfg.nextLocationAreasURL = resp.Next
+	cfg.prevLocationAreasURL = resp.Previous
+
+	return nil
+}
+
+func commandMapB(cfg *config) error {
+	if cfg.prevLocationAreasURL == nil {
+		return errors.New("this is the first page")
+	}
+
+	resp, err := cfg.pokeapiClient.ListLocationAreas(cfg.prevLocationAreasURL)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Location Areas:")
+	for _, area := range resp.Results {
+		fmt.Printf("-%s\n", area.Name)
+	}
+
+	cfg.nextLocationAreasURL = resp.Next
+	cfg.prevLocationAreasURL = resp.Previous
+
 	return nil
 }
