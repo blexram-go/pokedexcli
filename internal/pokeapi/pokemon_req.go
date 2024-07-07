@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetPokemon(pokemonName string) (PokemonData, error) {
+func (c *Client) RequestPokemonByName(pokemonName string) (PokemonData, error) {
 	endpoint := "/pokemon/" + pokemonName
 	fullURL := baseURL + endpoint
 

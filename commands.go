@@ -86,7 +86,7 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 	pokemonName := args[0]
 
-	pokemon, err := cfg.pokeapiClient.GetPokemon(pokemonName)
+	pokemon, err := cfg.pokeapiClient.RequestPokemonByName(pokemonName)
 	if err != nil {
 		return err
 	}
@@ -115,6 +115,10 @@ func commandInspect(cfg *config, args ...string) error {
 	fmt.Printf("Name: %s\n", pokemon.Name)
 	fmt.Printf("Height: %v\n", pokemon.Height)
 	fmt.Printf("Weight: %v\n", pokemon.Weight)
+	fmt.Println("Moves:")
+	for _, move := range pokemon.Moves {
+		fmt.Printf(" - %s", move.Move.Name)
+	}
 	fmt.Println("Stats:")
 	for _, stat := range pokemon.Stats {
 		fmt.Printf(" - %s: %v\n", stat.Stat.Name, stat.BaseStat)
